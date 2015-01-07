@@ -3,33 +3,56 @@
 	// UI for index page
 
 	$user_logged = false;
+	$albums_exist = false;
 			
 	function index_calculate_values() {
-		global $user_logged;
+		global $user_logged, $albums_exist;
 
 		if (isset($_COOKIE['id']) and isset($_COOKIE['hash'])) {
 			$user_logged = true;
 		}
+		
+		$albums_exist = libdb_check_albums();
 	}
 	
 	function index_render_ui() {
-		global $user_logged;
+		global $user_logged, $albums_exist;
 
 		if ($user_logged) {
 			print '
 			<div class="ui left vertical inverted labeled blue sidebar menu">
-  			<a class="item">
-    			<i class="home icon"></i>	
-    			Home
-  			</a>
+  			<span class="item header">
+    			Albums
+    		<a class="menu-button" style="width: 44px;" href="javascript:">
+    			<div class="menu-button">
+    				<i class="plus icon" style="margin-right: 0px;"></i>
+    			</div>
+    		</a>
+  			</span>
 </div>';
 
 		print '
 		<div class="pusher">
     		<div class="ui white big launch right attached fixed button" onclick="lib_toggle_sidebar();">
   				<i class="ellipsis vertical icon" onclick="lib_toggle_sidebar();"></i>
-		</div>
- 		</div>';
+  			</div>';
+  			
+  		if (!$albums_exist) {	
+	  		print '<div id="content-no-album">
+	  				<h2 class="ui icon header">
+	  					<i class="photo icon"></i>
+	  				
+	  					<div class="content">
+	  					No albums
+	  					<div class="sub header">Create new albums by pressing <i class="plus icon" style="font-size: 1em; display: inline;"></i> in side menu.</div>
+	  					</div>
+	  				</h2>
+	  			</div>';
+  		} else {
+	  		
+  		}	
+  			
+ 		print '</div>';
 
 		} else {
 

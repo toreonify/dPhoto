@@ -25,6 +25,30 @@
 		$mysql->close();
 	}
 
+	function libdb_check_albums() {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+
+		connect($mysql);
+
+		$query = "SELECT EXISTS(SELECT 1 FROM albums WHERE nu_user = ".$user_id.") AS `albums_exist`";
+
+		$result = libdb_exec_query_assoc($query);
+
+		$mysql->close();
+
+		if (isset($result) && is_array($result)) {
+			if ($result['albums_exist'] == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
 	function libdb_check_watch($path) {
 		$path = urlencode($path);
 
