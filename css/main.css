@@ -1,0 +1,100 @@
+.fixed.launch.button {
+	position: fixed;
+	top: 63px;
+	left: -1px;
+	width: 55px;
+	height: auto;
+	white-space: nowrap;
+	overflow: hidden;
+	padding-left: 1.2em !important;
+	border-radius: 0px !important;
+	-webkit-transition: 0.3s width ease, 0.5s transform ease;
+	-moz-transition: 0.3s width ease, 0.5s transform ease;
+	-o-transition: 0.3s width ease, 0.5s transform ease;
+	-ms-transition: 0.3s width ease, 0.5s transform ease;
+	transition: 0.3s width ease, 0.5s transform ease;
+}
+
+.ui.sidebar {
+	top: 37px !important;
+}
+
+#viewer-img {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#viewer {
+	top: 10% !important;
+	margin-top: 0px !important;
+}
+
+#back-button {
+	display: none;
+}
+
+.header-image {
+	width: 100%;
+	text-align: center;
+	overflow: hidden;
+}
+
+.header-image div {
+	width: 100%;
+	position: fixed;
+	height: 700px;
+	z-index: 1;
+
+	background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(247,247,247,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(247,247,247,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(247,247,247,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(247,247,247,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(247,247,247,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(247,247,247,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */
+}
+
+.header-image img {
+	height: 700px;
+	opacity: 0.9;
+	position: relative;
+	top: 0px;
+	left: 50%;
+	margin-left: -90%;
+}
+
+body {
+	margin: 0px;
+}
+
+#main-land {
+	margin-left: 15%;
+	margin-right: 15%;
+	width: 70%;
+	
+	position: absolute;
+	top: 62px;
+}
+
+#login-land {
+	margin-left: 30%;
+	margin-right: 30%;
+	width: 40%;
+	
+	position: absolute;
+	top: 62px;
+}
+
+#header-menu {
+	margin-bottom: 0px;
+}
+
+#content {
+	position: relative;
+	padding-top: 57px;
+	margin: 0px 20px 20px 20px;
+}
+
+.card a{
+	word-wrap: break-word;
+}
