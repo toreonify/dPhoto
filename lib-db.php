@@ -77,7 +77,7 @@
 
 	// Connect MySQL
 	function connect(&$mysql) {
-		$mysql = new mysqli("localhost", "root", "kf3VeMww");
+		include('/var/config_mysql.php');
 		
 		$mysql->select_db("nuPhoto");
 		$mysql->query("SET NAMES utf8");
