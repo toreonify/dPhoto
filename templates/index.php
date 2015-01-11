@@ -40,7 +40,8 @@
   				<i class="ellipsis vertical icon" onclick="lib_toggle_sidebar();"></i>
   			</div>';
 
-  			
+  		print '<div id="album_content">';
+	  			
   		if (!$albums_exist) {	
 	  		print '<div id="content-no-album">
 	  				<h2 class="ui icon header">
@@ -55,6 +56,8 @@
   		} else {
 	  		
   		}	
+  		
+  		print '</div>';
   			
  		print '</div>';
 

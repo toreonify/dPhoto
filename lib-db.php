@@ -21,6 +21,23 @@
 		$mysql->close();
 	}
 
+	if (isset($_GET['get_album_watchlist']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];	
+		$album_id = $_GET['get_album_watchlist'];
+	
+		connect($mysql);
+		
+		$query = "SELECT id, nu_path FROM watchlist WHERE nu_album='".$user_id."' AND nu_user='".$user_id."'";
+		
+		$result = $mysql->query($query);
+		
+		print_r(json_encode($result->fetch_all(MYSQLI_ASSOC)));
+		
+		$mysql->close();
+	}
+
 	if (isset($_GET['get_albums']) && isset($_COOKIE['id'])) {
 		$result = NULL;
 		$mysql = NULL;

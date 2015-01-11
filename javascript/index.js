@@ -1,12 +1,15 @@
 // nuPhoto
 // JS for index.php
+
 var albums_count = 0;
+var active_album = -1;
 var visible_edit_menu = -1;
 var active_rename_menu = -1;
 var active_delete_menu = -1;
 
 var album_item_edit_dropdown = '<div class="ui dropdown menu-button-item"><i class="write icon" style="margin-right: 0px; width: 23px;"></i><div class="menu album-edit-dropdown"><div class="item" style="padding: 12px !important;" id="rename">Rename</div><div class="item" style="padding: 12px !important;" id="delete">Delete</div><div class="item" style="text-align: center;background: #fff;cursor: default; visibility: hidden; display: none;" id="sure">Are you sure?</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(0, 128, 0, 0.2); visibility: hidden; display: none;" id="yes">Yes</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(255, 0, 0, 0.2); visibility: hidden; display: none;" id="cancel">Cancel</div></div></div>';
 
+var album_no_watches = '<div id="content-no-watches"><h2 class="ui icon header"><i class="folder icon"></i><div class="content">No watches<div class="sub header">Add new folders in side menu to watch photos.</div></div></h2></div>';
 
 function lib_load() {
 	$.get("lib-db.php?get_albums_count", function( data ) {
@@ -21,11 +24,40 @@ function lib_load() {
 		content = $.parseJSON(content);
 		
 		$.each(content, function(index, value) {
-			$("#albums_list").append('<div class="item album_item" id="album_item_' + value.id + '"><div class="ui transparent large input"><div id="album_label_' + value.id + '" class="album_label" ondblclick="lib_change_album_name(this);">' + value.nu_name + '</div></div>' + album_item_edit_dropdown + '</div>');
+			if (index == 0) {
+				active_album = value.id;
+			}
+			$("#albums_list").append('<div class="item album_item" id="album_item_' + value.id + '"><div class="ui transparent large input"><div id="album_label_' + value.id + '" class="album_label" ondblclick="lib_change_album_name(this);" onclick="lib_show_album(this.id.split(\'_\')[2]);">' + value.nu_name + '</div></div>' + album_item_edit_dropdown + '</div>');
 
     	}); 
+    	
+    	lib_show_album(active_album);
 		
 		lib_set_dropdown($(".menu-button-item"));
+	});
+	
+}
+
+function lib_show_no_watches() {
+	$("#album_content").html(album_no_watches);
+}
+
+function lib_show_album(album_id) {
+	
+	$.get("lib-db.php?get_album_watchlist=" + album_id, function( data ) {
+		var content = decodeURI(data);
+		
+		content = $.parseJSON(content);
+	
+		console.log(content);
+		
+		if (content.length == 0) {
+			lib_show_no_watches();
+		} else {
+			console.log('render album');
+		}
+		
+		$("#albums_list").sidebar("hide");
 	});
 	
 }
