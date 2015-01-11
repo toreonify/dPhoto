@@ -1,11 +1,51 @@
+.album_item {
+	background-color: rgba(255,255,255,0.1) !important;
+	padding: 12px !important;
+}
+
+.album-edit-dropdown {
+	position: fixed !important;
+	border: 0px !important;
+	border-radius: 0px !important;
+}
+
+.menu-button-item {
+	position: absolute !important;
+	right: 0px;
+	top: 0;
+	height: 100%;
+	width: 45px; 
+	line-height: 22px !important;
+	padding: 12px;
+	background-color: rgba(255,255,255, 0.1);
+}
+
+.album_input {
+	color: #ffffff !important;
+	padding: 0px !important;
+	border: 0 !important;
+	line-height: 22px;
+}
+
+.album_label {
+	color: #fff; 
+	line-height: 22px;
+}
+
+#albums_list {
+	padding-bottom: 135px !important;
+}
+
 .menu-button {
+	width: 45px; 
+	line-height: 1 !important;
 	position: absolute;
 	right: 0px;
 	top: 0;
 	height: 100%;
-	padding-top: .83em;
-	padding-right: .95em;
-	padding-left: .95em;
+	padding-top: .78571em;
+	padding-right: 12px;
+	padding-left: 12px;
 	background-color: rgba(255,255,255, 0.1);
 }
 
@@ -19,7 +59,7 @@
 	width: 500px;
 	margin: auto;
 	height: 200px;
-	padding-top: 37px;
+	padding-top: 35px;
 }
 
 .fixed.launch.button {
@@ -40,7 +80,7 @@
 }
 
 .ui.sidebar {
-	top: 37px !important;
+	top: 35px !important;
 }
 
 #viewer-img {
@@ -115,7 +155,7 @@ body {
 
 #content {
 	position: relative;
-	padding-top: 57px;
+	padding-top: 55px;
 	margin: 0px 20px 20px 20px;
 }
 

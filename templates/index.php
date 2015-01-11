@@ -19,23 +19,27 @@
 		global $user_logged, $albums_exist;
 
 		if ($user_logged) {
-			print '
-			<div class="ui left vertical inverted labeled blue sidebar menu">
+			print '<script src="javascript/index.js"></script>';
+			
+			print '			
+			<div class="ui left vertical inverted labeled blue sidebar menu" id="albums_list">
   			<span class="item header">
     			Albums
-    		<a class="menu-button" style="width: 44px;" href="javascript:">
+    		<a class="menu-button" href="javascript:lib_add_album()">
     			<div class="menu-button">
-    				<i class="plus icon" style="margin-right: 0px;"></i>
+    				<i class="plus icon" style="margin-right: 0px; width: 23px;"></i>
     			</div>
     		</a>
   			</span>
-</div>';
+
+  			</div>';
 
 		print '
 		<div class="pusher">
     		<div class="ui white big launch right attached fixed button" onclick="lib_toggle_sidebar();">
   				<i class="ellipsis vertical icon" onclick="lib_toggle_sidebar();"></i>
   			</div>';
+
   			
   		if (!$albums_exist) {	
 	  		print '<div id="content-no-album">

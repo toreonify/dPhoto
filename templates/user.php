@@ -55,7 +55,10 @@
   </div>
 </div>';
 		
-			print '<div id="content">';
+			print '<script src="javascript/user.js"></script>';
+			
+			print '
+			<div id="content">';
 		}
 		
 		print '

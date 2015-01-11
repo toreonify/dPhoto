@@ -4,7 +4,91 @@
 
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
+	
+	if (isset($_GET['delete_album']) && isset($_COOKIE['id'])) {
+		$album_id = urlencode($_GET['delete_album']);
 
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+
+		connect($mysql);
+
+		$query = "DELETE FROM albums WHERE nu_user = ".$user_id." AND id = '".$album_id."'";
+		
+		libdb_exec_query($query);
+		
+		$mysql->close();
+	}
+
+	if (isset($_GET['get_albums']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];	
+	
+		connect($mysql);
+		
+		$query = "SELECT id, nu_name FROM albums WHERE nu_user='".$user_id."'";
+		
+		$result = $mysql->query($query);
+		
+		print_r(json_encode($result->fetch_all(MYSQLI_ASSOC)));
+		
+		$mysql->close();
+	}
+	
+	if (isset($_GET['get_albums_count']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];	
+	
+		connect($mysql);
+		
+		$query = "SELECT COUNT(id) FROM albums WHERE nu_user='".$user_id."'";
+		
+		$result = libdb_exec_query_assoc($query);
+		
+		$mysql->close();
+		
+		print $result['COUNT(id)'];
+	}
+
+	if (isset($_GET['album_id']) && isset($_GET['rename_album']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$name = $_GET['rename_album'];
+		$user_id = $_COOKIE['id'];	
+		$id = urlencode($_GET['album_id']);
+	
+		connect($mysql);
+		
+		print $name;
+		
+		$query = "UPDATE albums SET nu_name='".$name."' WHERE id='".$id."' AND nu_user='".$user_id."'";
+		
+		libdb_exec_query($query);
+		
+		$mysql->close();
+	}
+
+	if (isset($_GET['add_album']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];	
+	
+		connect($mysql);
+		
+		$query = "INSERT INTO albums (id, nu_user, nu_name) VALUES (NULL, ".$user_id.", '')";
+		
+		$result = $mysql->query($query);
+		
+		$id = $mysql->insert_id;
+		
+		$mysql->close();
+		
+		print $id;
+	}
+	
 	if (isset($_GET['set_watch']) && isset($_COOKIE['id'])) {
 		$path = urlencode($_GET['set_watch']);
 

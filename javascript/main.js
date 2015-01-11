@@ -1,15 +1,17 @@
 // nuPhoto
-// UI for user page
+// JS with all functions
 	
 // Path to go up folder
 var lib_path = "/";	
 
 window.onload = function() {
-	lib_refresh_popup();
-
 	$('.ui.dropdown').dropdown({
 		action: 'hide'
 	});
+	
+	if (typeof lib_load === "function") { 
+		lib_load();
+	}
 }
 
 function lib_toggle_sidebar() {
