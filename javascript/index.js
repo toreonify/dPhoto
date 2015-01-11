@@ -7,7 +7,7 @@ var visible_edit_menu = -1;
 var active_rename_menu = -1;
 var active_delete_menu = -1;
 
-var album_item_edit_dropdown = '<div class="ui dropdown menu-button-item"><i class="write icon" style="margin-right: 0px; width: 23px;"></i><div class="menu album-edit-dropdown"><div class="item" style="padding: 12px !important;" id="rename">Rename</div><div class="item" style="padding: 12px !important;" id="delete">Delete</div><div class="item" style="text-align: center;background: #fff;cursor: default; visibility: hidden; display: none;" id="sure">Are you sure?</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(0, 128, 0, 0.2); visibility: hidden; display: none;" id="yes">Yes</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(255, 0, 0, 0.2); visibility: hidden; display: none;" id="cancel">Cancel</div></div></div>';
+var album_item_edit_dropdown = ' class="chevron down icon" style="margin-right: 0px; width: 23px;"></i><div class="menu album-edit-dropdown"><div class="item" style="padding: 12px !important;" id="rename">Rename</div><div class="item" style="padding: 12px !important;" id="delete">Delete</div><div class="item" style="text-align: center;background: #fff;cursor: default; visibility: hidden; display: none;" id="sure">Are you sure?</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(0, 128, 0, 0.2); visibility: hidden; display: none;" id="yes">Yes</div><div class="item" style="padding: 12px !important;line-height: 22px;width: 130px;margin: 0px;float: left;text-align: center;background: rgba(255, 0, 0, 0.2); visibility: hidden; display: none;" id="cancel">Cancel</div></div></div>';
 
 var album_no_watches = '<div id="content-no-watches"><h2 class="ui icon header"><i class="folder icon"></i><div class="content">No watches<div class="sub header">Add new folders in side menu to watch photos.</div></div></h2></div>';
 
@@ -27,7 +27,7 @@ function lib_load() {
 			if (index == 0) {
 				active_album = value.id;
 			}
-			$("#albums_list").append('<div class="item album_item" id="album_item_' + value.id + '"><div class="ui transparent large input"><div id="album_label_' + value.id + '" class="album_label" ondblclick="lib_change_album_name(this);" onclick="lib_show_album(this.id.split(\'_\')[2]);">' + value.nu_name + '</div></div>' + album_item_edit_dropdown + '</div>');
+			$("#albums_list").append('<div class="item album_item" id="album_item_' + value.id + '"><div class="ui transparent large input"><div id="album_label_' + value.id + '" class="album_label" ondblclick="lib_change_album_name(this);" onclick="lib_show_album(this.id.split(\'_\')[2]);">' + value.nu_name + '</div></div>' + '<div class="ui dropdown menu-button-item"><i id="album_edit_icon_' + value.id + '"' + album_item_edit_dropdown + '</div>');
 
     	}); 
     	
@@ -108,11 +108,17 @@ function lib_set_dropdown(dropdown) {
 				lib_hide($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#yes'));
 				lib_hide($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#cancel'));
 
+				$("#album_edit_icon_" + visible_edit_menu).addClass("down");
+				$("#album_edit_icon_" + visible_edit_menu).removeClass("up");				
+
 				visible_edit_menu = -1;
 			},
 			onShow: function() {
 				$(this).parent().next().css("margin-top", "73px");	
 				visible_edit_menu = $(this).parent().attr('id').split('_')[2];
+				
+				$("#album_edit_icon_" + visible_edit_menu).removeClass("down");
+				$("#album_edit_icon_" + visible_edit_menu).addClass("up");
 			}
   		});
 }
@@ -169,7 +175,7 @@ function lib_set_album_name(input, newalbum) {
 		
 		$(input).replaceWith('<div id="album_label_' + id + '" class="album_label" ondblclick="lib_change_album_name(this);">' + name + '</div>');
 		if (newalbum == 1) {
-			$("#album_label_" + id).parent().parent().append(album_item_edit_dropdown);
+			$("#album_label_" + id).parent().parent().append('<div class="ui dropdown menu-button-item"><i id="album_edit_icon_' + value.id + '"' + album_item_edit_dropdown);
 		}
 		
 		lib_set_dropdown($("#album_label_" + id).parent().parent().find(".dropdown"));
