@@ -2,16 +2,16 @@
 	// nuPhoto
 	// Login check
 
-    mysql_connect("localhost", "root", "kf3VeMww");
-    mysql_select_db("nuPhoto");
+    include '../config_mysql.php';
+    include 'lib-db.php';
 
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
 
     if (isset($_COOKIE['id']) and isset($_COOKIE['hash']))
     {  
-        $query = mysql_query("SELECT * FROM users WHERE id = '".intval($_COOKIE['id'])."' LIMIT 1");
-        $userdata = mysql_fetch_assoc($query);
+        $query = "SELECT * FROM users WHERE id = '".intval($_COOKIE['id'])."' LIMIT 1";
+        $userdata = libdb_exec_query_assoc($query);
 
         if(($userdata['nu_hash'] !== $_COOKIE['hash']) or ($userdata['id'] !== $_COOKIE['id']))
         {

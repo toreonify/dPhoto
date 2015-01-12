@@ -10,9 +10,9 @@
 
 		if (isset($_COOKIE['id']) and isset($_COOKIE['hash'])) {
 			$user_logged = true;
+			$albums_exist = libdb_check_albums();
 		}
 		
-		$albums_exist = libdb_check_albums();
 	}
 	
 	function index_render_ui() {
@@ -34,9 +34,13 @@
 
   			</div>';
 
+		print '<div class="ui inverted dimmer" id="loader">
+						<div class="ui text loader">Loading</div>
+				   </div>';
+
 		print '
 		<div class="pusher">
-    		<div class="ui white big launch right attached fixed button" onclick="lib_toggle_sidebar();">
+    		<div class="ui white big launch right attached fixed button" style="top: 55px !important;" onclick="lib_toggle_sidebar();">
   				<i class="ellipsis vertical icon" onclick="lib_toggle_sidebar();"></i>
   			</div>';
 

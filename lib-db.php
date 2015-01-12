@@ -29,7 +29,7 @@
 	
 		connect($mysql);
 		
-		$query = "SELECT id, nu_path FROM watchlist WHERE nu_album='".$user_id."' AND nu_user='".$user_id."'";
+		$query = "SELECT id, nu_path FROM watchlist WHERE nu_album='".$album_id."' AND nu_user='".$user_id."'";
 		
 		$result = $mysql->query($query);
 		
@@ -106,22 +106,31 @@
 		print $id;
 	}
 	
-	if (isset($_GET['set_watch']) && isset($_COOKIE['id'])) {
+	if (isset($_GET['set_watch']) && isset($_GET['album']) && isset($_COOKIE['id'])) {
 		$path = urlencode($_GET['set_watch']);
+		$album_id = $_GET['album'];
 
 		$result = NULL;
 		$mysql = NULL;
+		$return_new_id = false;
 		$user_id = $_COOKIE['id'];
 
 		connect($mysql);
 
-		if (libdb_check_watch($_GET['set_watch'])) {
+		if (libdb_check_watch($_GET['set_watch'], $_GET['album'])) {
 			$query = "DELETE FROM watchlist WHERE nu_user = ".$user_id." AND nu_path = '".$path."'";
 		} else {
-			$query = "INSERT INTO watchlist (nu_user, nu_path) VALUES (".$user_id.", '".$path."')";
+			$query = "INSERT INTO watchlist (nu_user, nu_path, nu_album) VALUES (".$user_id.", '".$path."', '".$album_id."')";
+			$return_new_id = true;
 		}
 
 		$result = libdb_exec_query($query);
+
+		if ($return_new_id) {
+			$id = $mysql->insert_id;
+
+			print $id;
+		}
 
 		$mysql->close();
 	}
@@ -150,23 +159,28 @@
 		}
 	}
 
-	function libdb_check_watch($path) {
+	function libdb_check_watch($path, $album_id) {
 		$path = urlencode($path);
 
 		$result = NULL;
+		$result2 = NULL;
 		$mysql = NULL;
 		$user_id = $_COOKIE['id'];
 
 		connect($mysql);
 
-		$query = "SELECT EXISTS(SELECT 1 FROM watchlist WHERE nu_path = '".$path."' AND nu_user = ".$user_id.") AS `path_exist`";
+		$query = "SELECT EXISTS(SELECT 1 FROM watchlist WHERE nu_path = '".$path."' AND nu_user = ".$user_id." AND nu_album='".$album_id."') AS `path_exist`";
 
 		$result = libdb_exec_query_assoc($query);
 
+		$query = "SELECT EXISTS(SELECT 1 FROM albums WHERE id = '".$album_id."' AND nu_user = ".$user_id.") AS `album_exist`";
+
+		$result2 = libdb_exec_query_assoc($query);
+
 		$mysql->close();
 
-		if (isset($result) && is_array($result)) {
-			if ($result['path_exist'] == 1) {
+		if (isset($result) && is_array($result) && isset($result2) && is_array($result2)) {
+			if (($result['path_exist'] == 1) && ($result2['album_exist'] == 1)) {
 				return true;
 			} else {
 				return false;

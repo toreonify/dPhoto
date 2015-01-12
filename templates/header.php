@@ -48,14 +48,18 @@
 	}
 	
 	function header_render_ui() {
+		include_once('text/templates.php');
 		global $user_logged, $display_name, $user_avatar, $user_link, $user_needforcloud;
+
 		
 		print '
 		<div class="ui fixed menu borderless" id="header-menu">
 			<div class="active item">
 				nuPhoto
   			</div>
-  		
+  			<a class="item" onclick="lib_folder_back();" id="back-button"><i class="angle left icon"></i> Back</a>
+			
+			<a class="item title disabled"></a>
 			
 			<div class="right menu">';
 			
@@ -63,13 +67,6 @@
 			print '<a href="add_cloud.php" class="item">Add cloud</a>';
 		}
 		
-		/*print 	   '<a href="'.$user_link.'" class="item">'
-						.$display_name.
-						'
-					</a>
-					<!--img class="ui image mini avatar item disabled" src="'.$user_avatar.'"></img-->';
-		*/
-
 		if ($user_logged) {
 		print '
 		<div class="ui dropdown item">
@@ -134,40 +131,4 @@
 		</div>';		
 	}
 	
-	function header_user_calculate_values() {
-		header_calculate_values();
-	}
-
-	function header_user_render_ui() {
-		global $user_logged, $display_name, $user_avatar, $user_link;
-		
-		print '
-		<div class="ui fixed menu borderless" id="header-menu">
-			<a href="index.php" class="item">nuPhoto</a>
-			<a class="item" onclick="lib_folder_back();" id="back-button"><i class="angle left icon"></i> Back</a>
-			
-			<div class="right menu">';
-		
-		if ($user_logged) {
-		print '
-		<div class="ui dropdown item">
-			<i class="user icon"></i>
-  			<div class="text">'.$display_name.'</div>
-  			
-  			<div class="menu">
-    			<div class="header">Account</div>
-    			<div class="item"><a href="settings.php"><i class="setting icon"></i>Settings</a></div>
-    			<div class="item"><a href="logout.php"><i class="sign out icon"></i>Log out</a></div>
-  			</div>
-		</div>';
-		} else {
-			print '<a href="'.$user_link.'" class="item">'
-				.$display_name.
-			'</a>';
-		}
-
-		print '</div>
-		
-		</div>';		
-	}
 ?>

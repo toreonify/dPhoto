@@ -3,8 +3,9 @@
 	
 // Path to go up folder
 var lib_path = "/";	
+var go_back = true;
 
-window.onload = function() {
+window.onload = function() {	
 	$('.ui.dropdown').dropdown({
 		action: 'hide'
 	});
@@ -19,16 +20,36 @@ function lib_toggle_sidebar() {
 }
 
 function lib_refresh_popup() {
-	$(".right.floated.plus.icon").popup('destroy');
+	$(".right.floated.plus.icon, .watchlist.delete.icon").popup('destroy');
 	$(".right.floated.checkmark.icon").popup('destroy');
 	$(".popup").remove();
-	$(".right.floated.plus.icon").popup();
+	$(".right.floated.plus.icon, .watchlist.delete.icon").popup();
 	$(".right.floated.checkmark.icon").popup();
+}
+
+function lib_get_text(text) {
+	
+	var result = null;
+	
+	$.ajax({
+        url: "text/templates.php?text=" + text + "&lang=en",
+        type: 'get',
+        async: false,
+        success: function(data) {
+            result = data;
+        } 
+     });
+	
+	 return result;
+}
+
+function lib_folder_watch_query(path, album, callback) {
+	$.get("lib-db.php?set_watch=" + path + "&album=" + album, callback);
 }
 
 function lib_folder_watch(parent, path) {
 
-	$.get("lib-db.php?set_watch=" + path, function( data ) {
+	lib_folder_watch_query(path, active_album, function(data) {
 		content = data;
 		
 		content = decodeURI(content);
@@ -46,7 +67,7 @@ function lib_folder_watch(parent, path) {
 			$(parent).attr('data-content', "Remove folder from watchlist");
 			$(".popup.visible").find(".content").html("Remove folder from watchlist");
 		}
-	});
+	})
 
 	return true;
 }
@@ -60,21 +81,19 @@ function lib_folder_ls(path) {
 		
 		$("#loader").dimmer('toggle');
 		
-		$.get("templates/user.php?json=" + path, function( data ) {
+		$.get("templates/user.php?json=" + path + "&album=" + active_album, function( data ) {
 			content = data;
 		
 			content = decodeURI(content);
 		
-			$("#content").html(content);
+			$("#content, #album_content").html(content);
 			
 			$("#loader").dimmer('toggle');
 			
 			if (path != "/") {
-				$("#back-button").show();
-			} else {
-				$("#back-button").hide();
+				go_back = false;
 			}
-			
+						
 			lib_refresh_popup();
 		});
 		
@@ -87,14 +106,22 @@ function lib_folder_ls(path) {
 }
 
 function lib_folder_back() {
-	var tmp = lib_path.slice(0, lib_path.lastIndexOf("/"));
-	
-	tmp.replace(' ', '');
-	
-	if (tmp == "") {
-		lib_folder_ls("/");
+	if (go_back) {
+		active_callback(active_album);
+		active_callback = null;
+		$("#back-button").hide();
 	} else {
-		lib_folder_ls(decodeURI(tmp));
+		var tmp = lib_path.slice(0, lib_path.lastIndexOf("/"));
+		
+		tmp.replace(' ', '');
+		
+		if (tmp == "") {
+			lib_folder_ls("/");
+			go_back = true;
+		} else {
+			lib_folder_ls(decodeURI(tmp));
+			go_back = false;
+		}
 	}
 }
 

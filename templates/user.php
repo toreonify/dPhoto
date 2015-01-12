@@ -4,6 +4,7 @@
 
 	$ls = NULL;
 	$json = (isset($_GET['json'])) ? $_GET['json'] : false;
+	$json_album_id = (isset($_GET['album'])) ? $_GET['album'] : false;
 	
 	if ($json != false) {	
 		if ($_SERVER["REMOTE_ADDR"] == "10.0.2.2") {
@@ -13,9 +14,6 @@
 			user_calculate_values();
 			user_render_ui();
 		}
-	} else {
-		include_once('lib-db.php');
-		include_once('lib-dropbox.php');
 	}
 	
 	function user_calculate_values() {
@@ -29,14 +27,9 @@
 	}
 	
 	function user_render_ui() {
-		global $ls, $json;
-		
-		if ($json == false) {		
-			print '<div class="ui inverted dimmer" id="loader">
-						<div class="ui text loader">Loading</div>
-				   </div>';
-		
-					print '<div class="ui basic modal" id="viewer">
+		global $ls, $json, $json_album_id;
+			
+		print '<div class="ui basic modal" id="viewer">
   <div class="content">
 	<img src="" class="ui rounded image" id="viewer-img"></img>
   </div>
@@ -54,12 +47,7 @@
     </div>
   </div>
 </div>';
-		
-			print '<script src="javascript/user.js"></script>';
-			
-			print '
-			<div id="content">';
-		}
+				
 		
 		print '
 				<div class="ui cards">';
@@ -109,7 +97,7 @@
 					$is_watching = "plus";
 					$is_watching_text = "Add folder to watchlist";
 
-					if (libdb_check_watch($file['path'])) {
+					if (libdb_check_watch($file['path'], $json_album_id)) {
 						$is_watching = "checkmark";
 						$is_watching_text = "Remove folder from watchlist";
 					}
@@ -134,9 +122,6 @@
 		
 		print '</div>';
 		
-		if ($json == false) {
-			print '</div>';
-		}
 	}
 
 ?>
