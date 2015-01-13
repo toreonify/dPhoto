@@ -109,6 +109,11 @@
 	if (isset($_GET['set_watch']) && isset($_GET['album']) && isset($_COOKIE['id'])) {
 		$path = urlencode($_GET['set_watch']);
 		$album_id = $_GET['album'];
+		$watch_id = NULL;
+		
+		if (isset($_GET['watch_id'])) {
+			$watch_id = $_GET['watch_id'];
+		}
 
 		$result = NULL;
 		$mysql = NULL;
@@ -120,8 +125,13 @@
 		if (libdb_check_watch($_GET['set_watch'], $_GET['album'])) {
 			$query = "DELETE FROM watchlist WHERE nu_user = ".$user_id." AND nu_path = '".$path."'";
 		} else {
-			$query = "INSERT INTO watchlist (nu_user, nu_path, nu_album) VALUES (".$user_id.", '".$path."', '".$album_id."')";
-			$return_new_id = true;
+			if ($watch_id != NULL) {
+				$query = "INSERT INTO watchlist (id, nu_user, nu_path, nu_album) VALUES (".$watch_id.",".$user_id.", '".$path."', '".$album_id."')";
+				$return_new_id = false;
+			} else {
+				$query = "INSERT INTO watchlist (nu_user, nu_path, nu_album) VALUES (".$user_id.", '".$path."', '".$album_id."')";
+				$return_new_id = true;
+			}
 		}
 
 		$result = libdb_exec_query($query);

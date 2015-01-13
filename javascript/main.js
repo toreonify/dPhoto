@@ -43,8 +43,12 @@ function lib_get_text(text) {
 	 return result;
 }
 
-function lib_folder_watch_query(path, album, callback) {
-	$.get("lib-db.php?set_watch=" + path + "&album=" + album, callback);
+function lib_folder_watch_query(path, album, callback, id) {
+	if (typeof id == "undefined") {
+		$.get("lib-db.php?set_watch=" + path + "&album=" + album, callback);
+	} else {
+		$.get("lib-db.php?set_watch=" + path + "&album=" + album + "&watch_id=" + id, callback);
+	} 
 }
 
 function lib_folder_watch(parent, path) {

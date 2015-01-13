@@ -63,6 +63,8 @@ function lib_show_watches_select() {
 function lib_watch_restore_callback(data, id) {
 	data = encodeURIComponent(data);
 	
+	console.log(data);
+	
 	if (data != "") {
 		$("#album_watch_" + id).attr("id", "album_watch_" + data);
 	}
@@ -85,7 +87,7 @@ function lib_watch_restore(id) {
 	
 	$("#album_watch_" + id).find('.black.message').remove();
 	
-	lib_folder_watch_query($("#album_watch_" + id).find('.header').text(), active_album, function(data) {lib_watch_restore_callback(data, id)});
+	lib_folder_watch_query($("#album_watch_" + id).find('.header').text(), active_album, function(data) {lib_watch_restore_callback(data, id)}, id);
 }
 
 function lib_show_watches_list(list) {
