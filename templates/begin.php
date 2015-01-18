@@ -3,14 +3,12 @@
 	// HTML begining for UI
 			
 	$title = NULL;
-	include_once('text/templates.php');
 			
-	function begin_calculate_values() {
-		global $title, $page, $text_template;
+	function begin_calculate_values($page) {
+		global $title;
+		include_once('text/templates.php');
 		
 		$title = $text_template['en']['title_'.$page];
-		
-		return false;
 	}
 	
 	function begin_render_ui() {
@@ -46,7 +44,6 @@
 				<link rel="stylesheet" type="text/css" href="/components/card.css">
 				<link rel="stylesheet" type="text/css" class="ui" href="css/semantic.min.css">
 				<link rel="stylesheet" type="text/css" href="css/main.css">
-				<!--link rel="stylesheet" type="text/css" href="css/semantic.css"-->
 				<script src="javascript/semantic.min.js"></script>	
 				<script src="javascript/main.js"></script>
 				<title>'.$title.'</title>

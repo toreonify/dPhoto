@@ -48,7 +48,7 @@
 
     }
 
-	lib_render_template("begin");	
+	lib_render_template("begin", $page);	
 	lib_render_template("header");	
 	lib_render_template("login");
 	lib_render_template("end");	

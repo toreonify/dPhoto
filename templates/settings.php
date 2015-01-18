@@ -5,7 +5,7 @@
 	$authorize_link = NULL;
 	$dropbox_added = NULL;
 	
-	function add_cloud_calculate_values() {
+	function settings_calculate_values() {
 		include_once('lib-db.php');
 		include_once('lib-dropbox.php');
 	
@@ -22,7 +22,7 @@
 		}
 	}
 	
-	function add_cloud_render_ui() {
+	function settings_render_ui() {
 		global $authorize_link, $dropbox_added;
 	
 		print '

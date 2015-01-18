@@ -20,6 +20,7 @@
 
 		if ($user_logged) {
 			print '<script src="javascript/index.js"></script>';
+			print '<script src="javascript/analyze.js"></script>';
 			
 			print '			
 			<div class="ui left vertical inverted labeled blue sidebar menu" id="albums_list">
@@ -37,6 +38,26 @@
 		print '<div class="ui inverted dimmer" id="loader">
 						<div class="ui text loader">Loading</div>
 				   </div>';
+
+		print '<div class="ui basic modal" id="viewer">
+  <div class="content">
+	<img src="" class="ui rounded image" id="viewer-img"></img>
+  </div>
+  <div class="actions">
+    <div class="two fluid ui inverted buttons">
+      <a id="viewer_link" class="ui basic inverted button" href="" target="_blank">
+
+        <i class="angle expand icon"></i>Open full image
+
+      </a>
+	  <div class="ui basic inverted button">
+	  <i class="angle close icon"></i>
+        Close preview
+      </div>
+    </div>
+  </div>
+</div>';
+
 
 		print '
 		<div class="pusher">

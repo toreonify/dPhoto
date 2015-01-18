@@ -5,8 +5,6 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
 	
-	print "Finishing...";
-	
 	include_once("lib-db.php");
 	include_once("lib-dropbox.php");
 	session_start();
@@ -27,7 +25,7 @@
 		
 		libdb_exec_query($query);
 		
-		header('Location: add_cloud.php');
+		header('Location: settings.php');
 	}
 	catch (dbx\WebAuthException_BadRequest $ex) {
 	   print("/dropbox-auth-finish: bad request: " . $ex->getMessage());

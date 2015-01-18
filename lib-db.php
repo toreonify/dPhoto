@@ -5,6 +5,10 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
 	
+	if (isset($_GET['watch_hash']) && isset($_COOKIE['id'])) {
+		print libdb_get_watch_hash($_GET['watch_hash']);
+	}
+	
 	if (isset($_GET['delete_album']) && isset($_COOKIE['id'])) {
 		$album_id = urlencode($_GET['delete_album']);
 
@@ -119,6 +123,10 @@
 		$mysql = NULL;
 		$return_new_id = false;
 		$user_id = $_COOKIE['id'];
+		
+		include_once("lib-dropbox.php");
+		
+		$metadata = NULL;
 
 		connect($mysql);
 
@@ -198,6 +206,26 @@
 		} else {
 			return false;
 		}
+	}
+	
+	function libdb_get_watch_hash($id) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+
+		connect($mysql);
+
+		$query = "SELECT nu_hash FROM watchlist WHERE id = '".$id."' AND nu_user = ".$user_id;
+
+		$result = libdb_exec_query_assoc($query);
+		
+		if (isset($result) && is_array($result)) {
+			$mysql->close();
+			
+			return $result['nu_hash'];
+		}
+		
+		return false;
 	}
 
 	// Connect MySQL

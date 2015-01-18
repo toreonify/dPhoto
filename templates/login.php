@@ -1,6 +1,6 @@
 <?php
 	// nuPhoto
-	// UI for index page
+	// UI for login page
 			
 	function login_calculate_values() {
 		return false;

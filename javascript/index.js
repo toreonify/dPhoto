@@ -87,16 +87,25 @@ function lib_watch_restore(id) {
 	
 	$("#album_watch_" + id).find('.black.message').remove();
 	
-	lib_folder_watch_query($("#album_watch_" + id).find('.header').text(), active_album, function(data) {lib_watch_restore_callback(data, id)}, id);
+	lib_folder_watch_query($("#album_watch_" + id).find('.header').text(), active_album, function(data){		lib_watch_restore_callback(data, id)}, id);
 }
 
 function lib_show_watches_list(list) {
 	
 	$("#album_content").html('<div class="ui basic segment" style="padding: 0px !important;"><h2 class="ui left floated header"><i class="unhide icon"></i><div class="content">Watches</div></h2><h2 class="ui right floated header" style="margin-right: 0px;"><div class="content"><div class="ui blue large basic button" style="margin-right: 0px;" onclick="lib_show_watches_select();">Add watch</div></div></h2></div><div class="ui divided items" id="album_watches">');
 	
+	var changed = false;
+	
+	
 	$.each(list, function(index, value) {
 			
-		$("#album_watches").append('<div class="item" id="album_watch_'+ value.id +'"><div class="middle aligned content"><i class="watchlist delete icon" onclick="lib_watch_list_delete(' + value.id + ');" style="float: right; right: 20px; position: absolute;" data-content="Delete watch" data-variation="inverted" data-position="left center"></i><span class="header"><i class="folder icon"></i>' + decodeURIComponent(value.nu_path) + '</span></div></div>');
+		changed = lib_watch_changed(value.id);
+		
+		if (changed) {
+			$("#album_watches").append('<div class="item" id="album_watch_'+ value.id +'"><div class="middle aligned content"><a class="ui teal ribbon label" onclick="lib_show_changes(' + value.id + ');">New photos available</a><i class="watchlist delete icon" onclick="lib_watch_list_delete(' + value.id + ');" style="float: right; right: 20px; position: absolute;" data-content="Delete watch" data-variation="inverted" data-position="left center"></i><span class="header" onclick="lib_show_changes(' + value.id + ');"><i class="folder icon"></i>' + decodeURIComponent(value.nu_path) + '</span></div></div>');
+		} else {			
+			$("#album_watches").append('<div class="item" id="album_watch_'+ value.id +'"><div class="middle aligned content"><i class="watchlist delete icon" onclick="lib_watch_list_delete(' + value.id + ');" style="float: right; right: 20px; position: absolute;" data-content="Delete watch" data-variation="inverted" data-position="left center"></i><span class="header" onclick="lib_show_changes(' + value.id + ');"><i class="folder icon"></i>' + decodeURIComponent(value.nu_path) + '</span></div></div>');
+		}
 			
 	});
 	
@@ -106,6 +115,8 @@ function lib_show_watches_list(list) {
 function lib_show_watches(album_id) {
 	$("#back-button").hide();
 	active_album = album_id;
+	$("#loader").dimmer('toggle');
+	$("#albums_list").sidebar("hide");
 		
 	$.get("lib-db.php?get_album_watchlist=" + album_id, function( data ) {
 		var content = decodeURI(data);
@@ -117,8 +128,8 @@ function lib_show_watches(album_id) {
 		lib_show_watches_list(content);
 		lib_refresh_popup();
 		
-		$("#albums_list").sidebar("hide");
 		active_callback = lib_show_watches;
+		$("#loader").dimmer('toggle');
 	});	
 	
 
@@ -141,6 +152,42 @@ function lib_set_menu_title(text) {
 function lib_show_photos() {
 	$("#back-button").hide();
 	$("#album_content").html('');
+	
+	$("#loader").dimmer('toggle');
+	
+	$.get("lib-db.php?get_album_watchlist=" + active_album, function( data ) {
+		var content = decodeURI(data);
+		content = $.parseJSON(content);
+		
+		$("#album_content").html('<div class="ui six doubling cards" id="album_images">');
+
+		$.each(content, function(index, value) {
+			var result = null;
+	
+			$.ajax({
+		        url: "analyze.php?get_photos=" + value.id,
+		        type: 'get',
+		        async: false,
+		        success: function(data) {
+					var content = decodeURI(data);
+	
+					content = $.parseJSON(content);
+						
+					result = content;				
+		        } 
+			});		
+			
+			$.each(result, function(index, value) {
+				$("#album_images").append('<div class="ui card" path="' + value.path + '"><a class="image" onclick="lib_get_file(\'' + value.path + '\');"><img src="data:image/png;base64,' + value.thumbnail + '"></a></div></div>');
+			});
+		
+		});
+		
+		$("#album_content").append('</div>');
+		$("#loader").dimmer('toggle');
+
+	});
+	
 }
 
 function lib_show_album(album_id) {
@@ -155,14 +202,13 @@ function lib_show_album(album_id) {
 	
 		console.log(content);
 		
-		$("#loader").dimmer('toggle');
-		
 		if (content.length == 0) {
 			lib_show_no_watches();
 		} else {	
 			lib_show_photos();
 			console.log('render album');
 		}
+		$("#loader").dimmer('toggle');
 		
 		$("#albums_list").sidebar("hide");
 		
@@ -197,7 +243,7 @@ function lib_set_dropdown(dropdown) {
 					lib_show($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#yes'));
 					lib_show($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#cancel'));
 					
-					//$("#album_item_" + visible_edit_menu).next().css("margin-top", "78px");
+					$("#album_item_" + visible_edit_menu).next().css("margin-top", "80px");
 				} else if (value == "Cancel") {
 					lib_show($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#watches'));
 					lib_show($("#album_item_" + visible_edit_menu).find(".dropdown").find('.menu').find('#rename'));
@@ -274,6 +320,8 @@ function lib_add_album() {
 }
 
 function lib_rename_album(id, name) {
+	lib_set_menu_title();
+	
 	$.get("lib-db.php?rename_album=" + encodeURIComponent(name) + "&album_id=" + id, function( data ) {
 		var content = decodeURI(data);
 		

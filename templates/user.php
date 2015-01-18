@@ -27,27 +27,7 @@
 	}
 	
 	function user_render_ui() {
-		global $ls, $json, $json_album_id;
-			
-		print '<div class="ui basic modal" id="viewer">
-  <div class="content">
-	<img src="" class="ui rounded image" id="viewer-img"></img>
-  </div>
-  <div class="actions">
-    <div class="two fluid ui inverted buttons">
-      <div class="ui basic inverted button">
-      <a id="viewer_link" href="" target="_blank"><i class="angle expand icon"></i>
-        Open full image
-	  </a>
-      </div>
-	  <div class="ui basic inverted button">
-	  <i class="angle close icon"></i>
-        Close preview
-      </div>
-    </div>
-  </div>
-</div>';
-				
+		global $ls, $json, $json_album_id;			
 		
 		print '
 				<div class="ui cards">';

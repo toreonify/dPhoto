@@ -57,6 +57,8 @@ function lib_folder_watch(parent, path) {
 		content = data;
 		
 		content = decodeURI(content);
+		
+		console.log(content);
 
 		if ($(parent).attr('data-content') == "Remove folder from watchlist") {
 			$(parent).removeClass('checkmark');
@@ -71,7 +73,7 @@ function lib_folder_watch(parent, path) {
 			$(parent).attr('data-content', "Remove folder from watchlist");
 			$(".popup.visible").find(".content").html("Remove folder from watchlist");
 		}
-	})
+	});
 
 	return true;
 }
