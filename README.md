@@ -1,4 +1,4 @@
-# nuPhoto
+# dPhoto
 Photo manager for cloud storages
 
 # Status
