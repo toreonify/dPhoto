@@ -58,7 +58,7 @@
 			try {
 				$dbxClient = new dbx\Client(libdb_get_user_token(0), "nuPhoto/0001");
 		
-				$ls = $dbxClient->getMetadataWithChildren($path);
+				$ls = $dbxClient->getMetadataWithChildrenMediaInfo($path);
 				
 				unset($ls['thumb_exists']);
 				unset($ls['icon']);
@@ -78,12 +78,22 @@
 						unset($ls['contents'][$i]['icon']);	unset($ls['contents'][$i]['read_only']);
 						unset($ls['contents'][$i]['modifier']);	unset($ls['contents'][$i]['bytes']);
 						unset($ls['contents'][$i]['size']);	unset($ls['contents'][$i]['root']);
+						unset($ls['contents'][$i]['modified']); unset($ls['contents'][$i]['client_mtime']);
 					} else {
 						if (in_array($fileext, array('jpg', 'jpeg', 'png', 'bmp'))) {
 							unset($ls['contents'][$i]['thumb_exists']);	unset($ls['contents'][$i]['icon']);
 							unset($ls['contents'][$i]['read_only']); unset($ls['contents'][$i]['modifier']);
 							unset($ls['contents'][$i]['bytes']); unset($ls['contents'][$i]['size']);
-							unset($ls['contents'][$i]['root']);
+							unset($ls['contents'][$i]['root']); 
+							
+							$ls['contents'][$i]['time_taken'] = NULL;
+							
+							if (isset($ls['contents'][$i]['photo_info']['time_taken'])) {
+								$ls['contents'][$i]['time_taken'] = $ls['contents'][$i]['photo_info']['time_taken'];
+								unset($ls['contents'][$i]['photo_info']);
+							} else {
+								$ls['contents'][$i]['time_taken'] = $ls['contents'][$i]['client_mtime'];
+							}
 						} else {
 							unset($ls['contents'][$i]);
 						}	
@@ -151,7 +161,7 @@
 
 		$dbxClient = new dbx\Client(libdb_get_user_token(0), "nuPhoto/0001");
 
-		return $dbxClient->getMetadata($path);
+		return $dbxClient->getMetadataWithMediaInfo($path);
 		
 	}
 		

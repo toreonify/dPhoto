@@ -51,11 +51,33 @@ function lib_import_photos() {
 	});
 	
 	console.log(photos_path);
+	
+	$("#loader").dimmer('toggle');
 		
 	$.get("analyze.php?set_metadata=" + parseInt(active_watch) + "&set_photos=" + encodeURIComponent($.toJSON(photos_path)), function( data ) {
+		$("#loader").dimmer('toggle');
 		$('#back-button').click();
+		console.log(data);
 	});
 	
+}
+
+function lib_import_photos_all() {
+	var photos_path = [];
+		
+	$(".ui.card").each(function(index, value){
+		photos_path.push($(this).attr("path"));
+	});
+	
+	console.log(photos_path);
+	
+	$("#loader").dimmer('toggle');
+		
+	$.get("analyze.php?set_metadata=" + parseInt(active_watch) + "&set_photos=" + encodeURIComponent($.toJSON(photos_path)), function( data ) {
+		$("#loader").dimmer('toggle');
+		$('#back-button').click();
+		console.log(data);
+	});
 }
 
 function lib_show_changes(id) {
@@ -72,7 +94,7 @@ function lib_show_changes(id) {
 
 		content = $.parseJSON(content);
 		
-		lib_set_menu_title("Select photos to import");
+		lib_set_menu_title("Выберите фотографии для импорта");
 		
 		$("#album_content").html('');
 		
@@ -83,12 +105,17 @@ function lib_show_changes(id) {
 		$.each(json, function(index, value) {
 			var path = value.path.split('/');
 			
-			$("#import_content").append('<div class="ui card" path="' + value.path + '"><span class="image"><img src="data:image/png;base64,' + value.thumbnail + '"></img></span><div class="content" style="font-size: 11px;"><a class="header" onclick="lib_select_photo($(this).parent().parent(), \'' + value.path + '\');">' + path[path.length - 1] + '</a><div class="meta"></div></div><div class="ui dimmer" id="selector"><div class="content" onclick="lib_select_photo($(this).parent().parent(), \'' + value.path + '\');"><div class="center"><h2 class="ui inverted icon header"><i class="checkmark icon"></i></h2></div></div></div></div></div>');
+			$("#import_content").append('<div class="ui card" path="' + value.path + '"><span class="image"><img src="images/image.png"></img></span><div class="content" style="font-size: 11px;"><a class="header" onclick="lib_select_photo($(this).parent().parent(), \'' + value.path + '\');">' + path[path.length - 1] + '</a><div class="meta"></div></div><div class="ui dimmer" id="selector"><div class="content" onclick="lib_select_photo($(this).parent().parent(), \'' + value.path + '\');"><div class="center"><h2 class="ui inverted icon header"><i class="checkmark icon"></i></h2></div></div></div></div></div>');
+			
+			$.get("analyze.php?get_thumbnail=" + value.path, function( data ) {
+				$('.ui.card[path="' + value.path + '"]').find('span').find('img').attr("src", "data:image/png;base64," + data);	
 			});
+		});
+			
 
 			$("#album_content").append('</div>');
 
-			$("#album_content").append('<div class="ui buttons import-buttons"><div class="ui button" onclick="$(\'#back-button\').click();">Cancel</div><div class="or"></div><div class="ui blue button disabled" id="import_button" onclick="lib_import_photos()">Import photos</div></div>');
+			$("#album_content").append('<div class="ui buttons import-buttons"><div class="ui button" onclick="$(\'#back-button\').click();">Отмена</div><div class="or" data-text="или"></div><div class="ui blue button disabled" id="import_button" onclick="lib_import_photos()">Импортировать выбранные</div><div class="or" data-text="или"></div><div class="ui teal button" id="import_button_all" onclick="lib_import_photos_all()">Импортировать все</div></div>');
 
 			$("#loader").dimmer('toggle');
 

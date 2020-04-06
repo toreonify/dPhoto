@@ -17,16 +17,16 @@
 				
 				<div class="two fields">
 					<div class="required field">
-						<label>Username</label>
+						<label>Имя пользователя</label>
 						
 						<div class="ui icon input">
-							<input type="text" name="login" placeholder="Username">
+							<input type="text" name="login">
 							<i class="user icon"></i>
 						</div>
 					</div>
 					
 					<div class="required field">
-						<label>Password</label>
+						<label>Пароль</label>
 						
 							<div class="ui icon input">
 								<input type="password" name="password">
@@ -35,7 +35,7 @@
 					</div>
 				</div>
   
-				<input class="ui submit button" type="submit" name="submit" value="Login"/>
+				<input class="ui submit button" type="submit" name="submit" value="Войти"/>
 			
 				</form>
 			

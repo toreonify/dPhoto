@@ -33,7 +33,6 @@
 
         $query = libdb_exec_query_assoc("SELECT COUNT(id) FROM users WHERE nu_login='".$mysql->real_escape_string($_POST['login'])."'");
 
-		$mysql->close();
 
         if ($query['COUNT(id)'] > 0) {
             $err[] = "Пользователь с таким логином уже существует в базе данных";
@@ -45,7 +44,14 @@
 
             $password = md5(md5(trim($_POST['password'])));
   
-            libdb_exec_query("INSERT INTO users SET nu_login='".$login."', nu_password='".$password."'");
+            $query = "INSERT INTO users SET nu_login='".$login."', nu_password='".$password."'";
+            $result = $mysql->query($query);
+		
+			$id = $mysql->insert_id;
+		
+			$mysql->close();
+            
+            mkdir("/var/opencv/users/".$id."/");
 
             header("Location: login.php"); exit();
             

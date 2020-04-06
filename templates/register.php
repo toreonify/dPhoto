@@ -16,7 +16,7 @@
 			print '
 			<div class="ui error message">
 				<div class="header">
-					There was some errors with your registration
+					Произошли следующие ошибки при регистрации:
 				</div>
 				<ul class="list">';
 
@@ -33,14 +33,14 @@
 			<div class="ui form">
 				<form method="POST">
 					<div class="field">
-						<label>Username</label>
-						<input placeholder="Username" type="text" name="login">
+						<label>Имя пользователя</label>
+						<input type="text" name="login">
 					</div>
 					<div class="field">
-						<label>Password</label>
+						<label>Пароль</label>
 						<input name="password" type="password">
 					</div>
-					<button name="submit" class="ui submit button">Submit</button>
+					<button name="submit" class="ui submit button">Подтвердить</button>
 				</form>
 			</div>
 					

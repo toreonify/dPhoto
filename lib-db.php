@@ -4,11 +4,85 @@
 
 	error_reporting(E_ALL);
 	ini_set('display_errors', 'on');
+
+	if (isset($_GET['delete_face']) && isset($_COOKIE['id'])) {
+		$query = "DELETE FROM faces_data WHERE id=".$_GET['delete_face'];
+		
+		libdb_exec_query($query);
+	}
+
+	if (isset($_GET['rename_face']) && isset($_GET['name']) && isset($_COOKIE['id'])) {
+		$query = "UPDATE faces SET nu_name='".urldecode($_GET['name'])."' WHERE id=".$_GET['rename_face'];
+		libdb_exec_query($query);
+	}
+
+	if (isset($_GET['get_photo_faces']) && isset($_COOKIE['id'])) {
+		print json_encode(libdb_get_photo_faces($_GET['get_photo_faces']));
+	}
+	
+	if (isset($_GET['get_album_faces']) && isset($_COOKIE['id'])) {
+		print json_encode(libdb_get_album_faces($_GET['get_album_faces']));
+	}
 	
 	if (isset($_GET['watch_hash']) && isset($_COOKIE['id'])) {
 		print libdb_get_watch_hash($_GET['watch_hash']);
 	}
 	
+	if (isset($_GET['delete_photo']) && isset($_GET['album']) && isset($_COOKIE['id'])) {
+		$user_id = $_COOKIE['id'];
+		
+		$query = "SELECT `id` FROM `watchlist` WHERE `nu_album`=".$_GET['album'];
+		$id = libdb_exec_query_assoc($query)['id'];
+		
+		$query = sprintf("UPDATE `metadata` SET `nu_imported`=0 WHERE `nu_path`='%s' AND `nu_user`=%s AND nu_watch=%s", $_GET['delete_photo'], $user_id, $id);
+		
+		libdb_exec_query($query);
+
+		$query = sprintf("SELECT `id` FROM `metadata` WHERE `nu_path`='%s' AND `nu_user`=%s AND nu_watch=%s", $_GET['delete_photo'], $user_id, $id);
+		$id = libdb_exec_query_assoc($query)['id'];
+		
+		$query = "DELETE FROM faces_data WHERE nu_photo=".$id;
+		
+		libdb_exec_query($query);
+	}
+
+	if (isset($_GET['delete_watch']) && isset($_COOKIE['id'])) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+
+		connect($mysql);
+				
+		$query = "SELECT `id` FROM `metadata` WHERE `nu_watch`=".$_GET['delete_watch']." AND `nu_user`=".$user_id;
+		
+		$result = $mysql->query($query);
+		
+		$result = $result->fetch_all(MYSQLI_ASSOC);
+
+		foreach ($result as &$value) {		
+			$query = "SELECT id, nu_face_id FROM face_data WHERE nu_photo=".$value['id'];
+			$res = $mysql->query($query);
+		
+			if ($res != false) {
+			
+				$res = $res->fetch_all(MYSQLI_ASSOC);
+				
+				foreach ($res as $ph) {
+					rmdir("/var/opencv/users/".$user_id."/".$ph['nu_face_id']."/");
+				}
+				
+				$query = "DELETE FROM `faces_data` WHERE `nu_photo`=".$value['id'];
+				libdb_exec_query($query);
+			}
+		}
+
+		$mysql->close();
+		
+		$query = "DELETE FROM `metadata` WHERE `nu_watch`=".$_GET['delete_watch']." AND `nu_user`=".$user_id;
+		
+		libdb_exec_query($query);
+	}
+
 	if (isset($_GET['delete_album']) && isset($_COOKIE['id'])) {
 		$album_id = urlencode($_GET['delete_album']);
 
@@ -17,9 +91,28 @@
 		$user_id = $_COOKIE['id'];
 
 		connect($mysql);
-
-		$query = "DELETE FROM albums WHERE nu_user = ".$user_id." AND id = '".$album_id."'";
 		
+		$query = "SELECT DISTINCT id FROM faces_data WHERE nu_photo IN (SELECT id as nu_photo FROM metadata WHERE nu_watch IN (SELECT `id` as nu_watch FROM `watchlist` WHERE `nu_album`=".$album_id."))";
+		$result = $mysql->query($query);
+		$result = $result->fetch_all(MYSQLI_ASSOC);		
+
+		output($result);
+
+		foreach ($result as &$value) {	
+			$query = "DELETE FROM faces_data WHERE id=".$value['id'];	
+			libdb_exec_query($query);
+		}
+
+		$query = "DELETE FROM `metadata` WHERE nu_watch IN (SELECT `id` as nu_watch FROM `watchlist` WHERE `nu_album`=".$album_id.")";
+		libdb_exec_query($query);
+		
+		$query = "DELETE FROM watchlist WHERE nu_album = ".$album_id;
+		libdb_exec_query($query);		
+
+		$query = "DELETE FROM sort WHERE nu_album = ".$album_id;
+		libdb_exec_query($query);		
+		
+		$query = "DELETE FROM albums WHERE nu_user = ".$user_id." AND id = '".$album_id."'";
 		libdb_exec_query($query);
 		
 		$mysql->close();
@@ -107,11 +200,14 @@
 		
 		$mysql->close();
 		
+		$query = "INSERT INTO sort (id, nu_album, nu_sort, nu_sdate, nu_edate) VALUES (NULL, ".$id.", 0, -1, -1)";
+		libdb_exec_query($query);
+		
 		print $id;
 	}
 	
 	if (isset($_GET['set_watch']) && isset($_GET['album']) && isset($_COOKIE['id'])) {
-		$path = urlencode($_GET['set_watch']);
+		$path = $_GET['set_watch'];
 		$album_id = $_GET['album'];
 		$watch_id = NULL;
 		
@@ -152,6 +248,91 @@
 
 		$mysql->close();
 	}
+	
+	function output($string) {
+		file_put_contents("/var/opencv/phplog", print_r($string, true)."\n", FILE_APPEND | LOCK_EX);
+	}
+	
+	function libdb_get_album_faces($album_id) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+
+		connect($mysql);
+		
+		$query = sprintf("SELECT id, nu_face_id, nu_photo FROM faces_data WHERE nu_photo IN (SELECT id AS nu_photo FROM metadata WHERE nu_user=%s AND nu_imported=1 AND nu_watch IN (SELECT id as nu_watch FROM watchlist WHERE nu_album=%s))", $user_id, $album_id);
+		
+		$result = $mysql->query($query);
+		$result = $result->fetch_all(MYSQLI_ASSOC);
+		
+		$metadata = array();
+		
+		foreach ($result as $key=>&$value) {
+			$face_id = $value['nu_face_id'];
+			
+			unset($result[$key]['nu_face_id']);
+			
+			$metadata[$face_id]['photos'][] = $result[$key]; 
+		}
+				
+		foreach ($metadata as $key=>&$value) {
+
+			$image = imagecreatefromjpeg("/var/opencv/users/".$user_id."/".$key."/0.jpg");
+			ob_start();
+			$image = imagepng($image);
+			$image = ob_get_contents();
+			ob_end_clean();
+
+			$metadata[$key]['image'] = base64_encode($image);
+			
+			$query = "SELECT nu_name FROM faces WHERE id=".$key;
+			$metadata[$key]['name'] = libdb_exec_query_assoc($query)['nu_name'];
+
+			foreach ($value['photos'] as &$face) {
+				
+				$query = "SELECT nu_path FROM metadata WHERE id=".$face['nu_photo'];
+				$face['path'] = libdb_exec_query_assoc($query)['nu_path'];
+				
+			}
+		}
+				
+		return $metadata;
+	}
+	
+	function libdb_get_photo_faces($photo_path) {
+		$result = NULL;
+		$mysql = NULL;
+		$user_id = $_COOKIE['id'];
+		
+		$query = "SELECT id FROM metadata WHERE nu_path='".$photo_path."'";
+
+		$photo_id = libdb_exec_query_assoc($query)['id'];
+
+		connect($mysql);
+		
+		$query = "SELECT id, nu_face_id, nu_x, nu_y, nu_w, nu_h FROM faces_data WHERE nu_photo=".$photo_id;
+		
+		$result = $mysql->query($query);
+		$result = $result->fetch_all(MYSQLI_ASSOC);
+		
+		foreach ($result as $key=>&$face) {
+						
+			$face_id = $face['nu_face_id'];
+						
+			$image = imagecreatefromjpeg("/var/opencv/users/".$user_id."/".$face_id."/0.jpg");
+			ob_start();
+			$image = imagepng($image);
+			$image = ob_get_contents();
+			ob_end_clean();
+			
+			$query = "SELECT nu_name FROM faces WHERE id=".$face_id;
+			$result[$key]['name'] = libdb_exec_query_assoc($query)['nu_name'];
+			
+			$result[$key]['image'] = base64_encode($image);
+		}
+		
+		return $result;
+	}
 
 	function libdb_check_albums() {
 		$result = NULL;
@@ -178,7 +359,7 @@
 	}
 
 	function libdb_check_watch($path, $album_id) {
-		$path = urlencode($path);
+		$path = $path;
 
 		$result = NULL;
 		$result2 = NULL;

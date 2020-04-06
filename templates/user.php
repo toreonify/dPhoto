@@ -41,7 +41,6 @@
 							<span class="group" style="color: %s;">%s</span>
 						</div>
 						<div class="description">
-							<span class="time">%s</span>
 						</div>
 					</div>
 				 </div>';
@@ -49,7 +48,7 @@
 		$card_photo = '
 				 <div class="ui card">
 					<div class="content">
-						<a class="header" onclick=\'lib_get_file("%s");\'>%s</a>
+						<a class="header" onclick=\'lib_get_file("%s",0);\'>%s</a>
 						<div class="meta">
 							<span class="group" style="color: %s;">%s</span>
 						</div>
@@ -71,30 +70,32 @@
 		
 			foreach ($ls as $file) {
 				if ($file['is_dir'] == 1) {
-					$time = explode(' ', $file['modified']);
-					$time = $time[1]." ".$time[2]." ".$time[3];
 				
 					$is_watching = "plus";
-					$is_watching_text = "Add folder to watchlist";
+					$is_watching_text = "Добавить папку в наблюдаемые";
 
 					if (libdb_check_watch($file['path'], $json_album_id)) {
 						$is_watching = "checkmark";
-						$is_watching_text = "Remove folder from watchlist";
+						$is_watching_text = "Убрать папку из наблюдаемых";
 					}
 
-					print(sprintf($card, $is_watching, $file['path'], $is_watching_text, $file['path'], $file['path'], "#009fda", "Folder", $time));
+					print(sprintf($card, $is_watching, $file['path'], $is_watching_text, $file['path'], $file['path'], "#009fda", "Папка"));
 				} else {
-					$time = explode(' ', $file['modified']);
-					$time = $time[1]." ".$time[2]." ".$time[3];
-				
+					if (isset($file['time_taken'])) {
+						$time = explode(' ', $file['time_taken']);
+						$time = $time[1]." ".$time[2]." ".$time[3];
+					} else {
+						$time = "";
+					}
+					
 					$filename = explode('/', $file['path']);
 					$filename = $filename[count($filename) - 1];
 				
 					$fileext = explode('.', $file['path']);
-					$fileext = $fileext[count($fileext) - 1];
+					$fileext = mb_strtolower($fileext[count($fileext) - 1]);
 				
 					if (in_array($fileext, array('jpg', 'jpeg', 'png', 'bmp'))) {
-						print(sprintf($card_photo, $file['path'], $filename, "#da9f00", "Photo", $time));
+						print(sprintf($card_photo, $file['path'], $filename, "#da9f00", "Фотография", $time));
 					}
 				}
 			}

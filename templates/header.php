@@ -36,7 +36,7 @@
 			
 			// End
 		} else {
-			$display_name = "Log in";
+			$display_name = "Войти";
 			$user_link = "login.php";
 		}
 	}
@@ -48,13 +48,18 @@
 		print '
 		<div class="ui fixed menu borderless" id="header-menu">
 			<a href="index.php" class="active item">
-				nuPhoto
+				dPhoto
   			</a>
-  			<a class="item" onclick="lib_folder_back();" id="back-button"><i class="angle left icon"></i> Back</a>
+  			<a class="item" onclick="lib_folder_back();" id="back-button"><i class="angle left icon"></i> Назад</a>
 			
 			<a class="item title disabled"></a>
 			
-			<div class="right menu">';
+			<div class="right menu">
+			
+			
+			<a href="user.docx" class="item">
+				Справка
+  			</a>';
 			
 		
 		if ($user_logged) {
@@ -64,9 +69,9 @@
   			<div class="text">'.$display_name.'</div>
   			
   			<div class="menu">
-    			<div class="header">Account</div>
-    			<div class="item"><a href="settings.php"><i class="setting icon"></i>Settings</a></div>
-    			<div class="item"><a href="logout.php"><i class="sign out icon"></i>Log out</a></div>
+    			<div class="header">Профиль</div>
+    			<div class="item"><a href="settings.php"><i class="setting icon"></i>Настройки</a></div>
+    			<div class="item"><a href="logout.php"><i class="sign out icon"></i>Выйти</a></div>
   			</div>
 		</div>';
 		} else {

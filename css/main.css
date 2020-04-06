@@ -3,10 +3,36 @@
 	padding: 12px !important;
 }
 
+.prevnext_viewer {
+	position: fixed;
+	height: 400px;
+	top: 0px;
+	margin-top: 28px !important;
+	text-align: center !important;
+	vertical-align: middle !important;
+	line-height: 400px !important;
+}
+
+#import_content {
+	padding-bottom: 100px;
+}
+
+.nu-link {
+	cursor: pointer;
+}
+
 .album-edit-dropdown {
 	position: fixed !important;
 	border: 0px !important;
 	border-radius: 0px !important;
+}
+
+.face-card:first-child {
+	margin-left: 0px;
+}
+
+.face-header {
+	cursor: pointer;
 }
 
 .import-buttons {

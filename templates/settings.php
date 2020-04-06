@@ -16,9 +16,9 @@
 		$user_token_drop = libdb_get_user_token(0);
 		
 		if ($user_token_drop != "") {
-			$dropbox_added = "Added";
+			$dropbox_added = "Добавлен";
 		} else {
-			$dropbox_added = '<a href="'.$authorize_link.'">Add to profile</a>';
+			$dropbox_added = '<a href="'.$authorize_link.'">Присоединить к профилю</a>';
 		}
 	}
 	

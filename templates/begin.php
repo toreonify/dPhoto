@@ -19,7 +19,7 @@
 		<html>
 			<head>
 				<meta charset="UTF-8">
-				<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+				<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 				<style type="text/css">
   					{# set default font for website #}
 				    *:not(.icon) {
@@ -38,12 +38,16 @@
 					}
 				</style>
 				<script src="javascript/jquery.js"></script>
+				<script src="javascript/jquery-ui.js"></script>
 				<meta name="viewport" content="width=device-width, initial-scale=1">
 				<meta name="mobile-web-app-capable" content="yes">
 				
 				<link rel="stylesheet" type="text/css" href="/components/card.css">
 				<link rel="stylesheet" type="text/css" class="ui" href="css/semantic.min.css">
 				<link rel="stylesheet" type="text/css" href="css/main.css">
+				<link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+				<link rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+				<link rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
 				<script src="javascript/semantic.min.js"></script>	
 				<script src="javascript/main.js"></script>
 				<title>'.$title.'</title>
